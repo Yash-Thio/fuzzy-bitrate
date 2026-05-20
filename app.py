@@ -97,6 +97,43 @@ def get_rules():
 def health_check():
     return jsonify({"status": "healthy"}), 200
 
+
+@app.route('/get-bitrate-baseline', methods=['POST'])
+def get_baseline_bitrate():
+    """Simple, intentionally poor baseline decision running on the Python backend.
+
+    Uses only the `bandwidth` input and fixed thresholds so it performs worse
+    than the fuzzy controller (no intelligence, ignores buffer/delay).
+    """
+    try:
+        data = request.json or {}
+        bw = max(0, min(10, data.get('bandwidth', 0)))
+
+        # Intentionally simple bitrate buckets (coarse, suboptimal)
+        BITRATE_LEVELS = [240, 360, 480, 720, 1080]
+
+        if bw < 2:
+            chosen = BITRATE_LEVELS[0]
+        elif bw < 4:
+            chosen = BITRATE_LEVELS[1]
+        elif bw < 6:
+            chosen = BITRATE_LEVELS[2]
+        elif bw < 8:
+            chosen = BITRATE_LEVELS[3]
+        else:
+            chosen = BITRATE_LEVELS[4]
+
+        app.logger.info({
+            'mode': 'baseline-python',
+            'bandwidth': bw,
+            'bitrate': chosen
+        })
+
+        return jsonify({'bitrate': chosen, 'source': 'baseline-python'})
+    except Exception as e:
+        app.logger.error(f"Error in baseline decision: {e}")
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     # Use PORT from environment if provided (Render sets this automatically).
     try:
