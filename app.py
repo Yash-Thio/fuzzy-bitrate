@@ -40,11 +40,11 @@ rule4 = ctrl.Rule(bandwidth['medium'] & buffer['half'] & (delay['very_low'] | de
 rule5 = ctrl.Rule(bandwidth['high'] & buffer['full'] & (delay['very_low'] | delay['low']), bitrate['high'])
 rule6 = ctrl.Rule(bandwidth['high'] & buffer['half'] & (delay['very_low'] | delay['low']), bitrate['medium'])
 rule7 = ctrl.Rule(bandwidth['medium'] & delay['high'], bitrate['low'])
-# rule8 = ctrl.Rule(bandwidth['high'] & buffer['full'] & delay['moderate'], bitrate['medium'])
-# rule9 = ctrl.Rule(bandwidth['high'] & buffer['half'] & delay['moderate'], bitrate['medium'])
-# rule10 = ctrl.Rule(bandwidth['medium'] & buffer['full'] & delay['moderate'], bitrate['medium'])
+rule8 = ctrl.Rule(bandwidth['high'] & buffer['full'] & delay['moderate'], bitrate['medium'])
+rule9 = ctrl.Rule(bandwidth['high'] & buffer['half'] & delay['moderate'], bitrate['medium'])
+rule10 = ctrl.Rule(bandwidth['medium'] & buffer['full'] & delay['moderate'], bitrate['medium'])
 
-bitrate_ctrl_system = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7])  # , rule8, rule9, rule10])
+bitrate_ctrl_system = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7 , rule8, rule9, rule10])
 bitrate_simulator = ctrl.ControlSystemSimulation(bitrate_ctrl_system)
 
 logging.basicConfig(level=logging.INFO)
